@@ -6,7 +6,7 @@ from tkinter import *
 from mpris2 import utils, player, interfaces
 from urllib.parse import urlparse
 from urllib.request import urlretrieve, urlcleanup
-from PIL import Image
+from PIL import Image, ImageTk
 
 # Get Spotify's interface
 #------------------------------------------------------------------------------
@@ -39,7 +39,14 @@ def get_spotify_artAlbum(url_album_cover) -> str:
     image.save(album_cover_path)
 
     return album_cover_path
-    pass
+
+# GUI helper functions
+#------------------------------------------------------------------------------
+
+def get_album_cover(artAlbum_url) -> ImageTk.PhotoImage:
+    image_artAlbum = Image.open(artAlbum_url)
+    image_artAlbum = image_artAlbum.resize([100, 100])
+    return ImageTk.PhotoImage(image_artAlbum)
 
 # Build GUI
 #------------------------------------------------------------------------------
@@ -65,7 +72,6 @@ def create_labels():
     text_justify = ""
 
     text_justify = get_text_justification(spotify_player.Metadata[track_title_tag], lbls_width)
-    print(text_justify)
     lbl_song_title = Label(
                         window,
                         text=f"Title: {spotify_player.Metadata[track_title_tag]}",
@@ -74,7 +80,6 @@ def create_labels():
     lbl_song_title.place(x=120, y=y_window_margin)
 
     text_justify = get_text_justification(spotify_player.Metadata[track_album_tag], lbls_width)
-    print(text_justify)
     lbl_album = Label(
                     window,
                     text=f"Album: {spotify_player.Metadata[track_album_tag]}",
@@ -83,7 +88,6 @@ def create_labels():
     lbl_album.place (x=120, y=y_window_margin + (lbl_height_px + y_lbl_margin)*1)
 
     text_justify = get_text_justification(spotify_player.Metadata[track_artist_tag], lbls_width)
-    print(text_justify)
     lbl_artist = Label(
                     window,
                     text=f"Artist: {spotify_player.Metadata[track_artist_tag][0]}",
@@ -95,10 +99,9 @@ def create_labels():
 
 def create_album_thumbnail():
     lbl_bg_color = 'white'
-    artAlbum = get_spotify_artAlbum(spotify_player.Metadata[track_artUrl_tag])
-    print(artAlbum)
-    thumbnail = PhotoImage(file='./album-cover.png', width=100, height=100)
-    lbl_thumbnail = Label(window, image=thumbnail)
+    artAlbum_url = get_spotify_artAlbum(spotify_player.Metadata[track_artUrl_tag])
+    thumbnail = get_album_cover(artAlbum_url)
+    lbl_thumbnail = Label(window, image=thumbnail, background=lbl_bg_color)
     lbl_thumbnail.place(x=10, y=10)
 
     # Keep the image after the function returns: https://ccia.ugr.es/mgsilvente/tkinterbook/photoimage.htm

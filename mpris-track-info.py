@@ -1,5 +1,5 @@
 import dbus
-from mpris2 import utils, player, interfaces
+from mpris2.mpris2 import utils, player, interfaces
 
 # Metadata fields keys
 track_title = 'xesam:title'

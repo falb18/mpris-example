@@ -3,7 +3,7 @@ import tempfile
 import os
 
 from tkinter import *
-from mpris2 import utils, player, interfaces
+from mpris2.mpris2 import utils, player, interfaces
 from urllib.parse import urlparse
 from urllib.request import urlretrieve, urlcleanup
 from PIL import Image, ImageTk

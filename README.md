@@ -1,29 +1,26 @@
-# MRPIS projects
+# MRPIS2 projects
 
 These are a collection of examples or programs that interact or use the D-bus MPRIS (Meia Player Remote Interfacing
 Specification).
 
-## Run environment
+## Create a virtual environment and install python packages
 
-Run the environment before executing any of the projects:
+First, we have to create a virtual environment and installed the packages from the requirements.txt:
 ```bash
-source mpris-venv/bin/activate
+python3 -m venv ./mpris-venv
+souce ./mpris-venv/bin/activate
+pip3 install -r requirements.txt
 ```
+Here is the list of the packages installed:
+- dbus-python 1.3.2
+- Pillow      9.5.0
+- tk          0.1.0
 
-The reason is that some of them use libraries that are not installed by default on the operating system.
+## Install MPRIS2 library
 
-## Install the libraries in the environment
-
-This is the list of the libraries used in these projects:
-- dbus-python
-- [mpris2](https://github.com/hugosenari/mpris2/tree/67356f29d68e29c7f3f0ddda5aaad6f68899b2bd)
-
-To install dbus-python:
-```bash
-pip3 install dbus-python
-```
-For mpris2 download the source code from the link provided above. The source code comes with other files but for this
-project we get rid of most of them and only left the mpris2 folder with the python scripts.
+For mpris2 download the source code from [mpris2 repo](https://github.com/hugosenari/mpris2/tree/master).
+The source code comes with other files but for this project we get rid of most of them and only left the mpris2 folder
+with the python scripts.
 
 ## Useful links
 
@@ -37,3 +34,4 @@ The following links are repositories that were used as inspiration for these pro
 - https://specifications.freedesktop.org/mpris-spec/latest/
 - https://dbus.freedesktop.org/doc/dbus-python/dbus.html
 - https://stackoverflow.com/questions/70737550/how-to-connect-to-mediaplayer2-player-playbackstatus-signal-using-pygtk
+- https://github.com/Bleuzen/SpotRec

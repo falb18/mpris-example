@@ -1,4 +1,5 @@
 import dbus
+from dbus.exceptions import DBusException
 import tempfile
 import os
 
@@ -17,19 +18,32 @@ track_album_tag = 'xesam:album'
 track_artist_tag = 'xesam:artist'
 track_artUrl_tag = 'mpris:artUrl'
 
-print(f"MPRIS2 bus name: {interfaces.Interfaces.MEDIA_PLAYER}")
-print(f"MPRIS2 object path: {interfaces.Interfaces.OBJECT_PATH}")
+spotify_player = None
+albums_dir = None
 
-uri = interfaces.Interfaces.MEDIA_PLAYER + ".spotify"
-print(f"Spotify bus name: {uri}")
+def get_spotify_player() -> player.Player:
+    global spotify_player
+    global albums_dir
+    uri = interfaces.Interfaces.MEDIA_PLAYER + ".spotify"
+    
+    try:
+        spotify_player = player.Player(dbus_interface_info={'dbus_uri': uri})
+    
+    except DBusException as dbus_exception:
+        # Catch the exception when the Spotify player is not running
+        print(f"DBusException: {str(dbus_exception)}")
+    
+    else:
+        print(f"MPRIS2 bus name: {interfaces.Interfaces.MEDIA_PLAYER}")
+        print(f"MPRIS2 object path: {interfaces.Interfaces.OBJECT_PATH}")
+        print(f"Spotify bus name: {uri}")
 
-spotify_player = player.Player(dbus_interface_info={'dbus_uri': uri})
-
-# Create temporary directory where album covers will be downloaded.
-# Keep in mind that after program ends all the thumbnails are going to be deleted.
-albums_dir = tempfile.TemporaryDirectory(prefix='albums_')
+        # Create temporary directory where album covers will be downloaded.
+        # Keep in mind that after program ends all the thumbnails are going to be deleted.
+        albums_dir = tempfile.TemporaryDirectory(prefix='albums_')
 
 def get_spotify_artAlbum(url_album_cover) -> str:
+    global albums_dir
     # For more information:
     # https://stackoverflow.com/a/18727481
     # https://stackoverflow.com/a/50336597
@@ -52,23 +66,23 @@ def get_album_cover(artAlbum_url) -> ImageTk.PhotoImage:
 #------------------------------------------------------------------------------
 
 window = Tk()
-window.title("Metadata information")
+window.title("MPRIS metadata information")
 window.geometry("450x120")
 # window.resizable(0, 0)
 
 def get_text_justification(str_metadata, str_length) -> str:
-    print(len(str_metadata))
     if len(str_metadata) >= str_length:
         return 'left'
     else:
         return 'center'
 
 def create_labels():
+    global spotify_player
     y_window_margin = 10
     y_lbl_margin = 2
     lbl_height_px = 21
     lbls_width = 27
-    lbl_bg_color = 'white'
+    lbl_bg_color = None
     text_justify = ""
 
     text_justify = get_text_justification(spotify_player.Metadata[track_title_tag], lbls_width)
@@ -115,8 +129,16 @@ def build_gui():
 # Main
 #------------------------------------------------------------------------------
 
-build_gui()
-window.mainloop()
+def main():
+    global spotify_player
+    get_spotify_player()
 
-# Delete all album covers downloaded
-urlcleanup()
+    if spotify_player != None:
+        build_gui()
+        window.mainloop()
+
+if __name__ == "__main__":
+    main()
+    
+    # Delete all album covers we have downloaded
+    urlcleanup()

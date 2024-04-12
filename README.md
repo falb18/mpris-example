@@ -40,7 +40,7 @@ python3 mpris-track-info.py
 This program is similar to the above but also displays the album cover fo the current track playing on Spotify.
 
 ```bash
-python3 mpris-track-info.py
+python3 gui-track-info.py
 ```
 
 ![Screenshot of gui](./imgs/screenshot-gui-track-info.png)
